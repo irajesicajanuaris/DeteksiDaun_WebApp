@@ -1,0 +1,31 @@
+# Dataset
+dataset/
+
+# Training results
+runs/
+outputs/
+plots/
+
+# Generated files
+static/outputs/*
+static/plots/*
+static/uploads/*
+temp/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environment
+venv/
+.venv/
+
+# Temporary files
+*.cache
+.DS_Store
+
+# Large model
+models/best_model.pth
+
+# Testing images
+testpredict/

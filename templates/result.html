@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hasil Prediksi</title>
+    <style>
+      :root {
+        --bg: #0b1220;
+        --text: #e8eefc;
+        --muted: #b7c3e6;
+        --line: rgba(255, 255, 255, 0.1);
+        --line2: rgba(255, 255, 255, 0.08);
+        --shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+        --radius: 18px;
+
+        --blue: rgba(59, 130, 246, 0.95);
+        --blue2: rgba(37, 99, 235, 0.95);
+        --green: rgba(34, 197, 94, 0.95);
+        --green2: rgba(16, 185, 129, 0.9);
+        --amber: rgba(245, 158, 11, 0.95);
+
+        --cardGrad: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.055),
+          rgba(255, 255, 255, 0.02)
+        );
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+          Arial, "Noto Sans", sans-serif;
+        color: var(--text);
+        background: radial-gradient(
+            1200px 520px at 18% 0%,
+            rgba(59, 130, 246, 0.25),
+            transparent 60%
+          ),
+          radial-gradient(
+            1000px 520px at 88% 8%,
+            rgba(34, 197, 94, 0.18),
+            transparent 55%
+          ),
+          linear-gradient(180deg, #070b14 0%, var(--bg) 100%);
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 26px 18px 56px;
+      }
+
+      /* ===== TOP ===== */
+      .top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 14px;
+      }
+      .leftHead {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+      .titleWrap h1 {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: 0.2px;
+      }
+      .titleWrap p {
+        margin: 5px 0 0;
+        color: var(--muted);
+        font-size: 13.5px;
+        line-height: 1.55;
+      }
+      .back {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        border-radius: 14px;
+        padding: 10px 12px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+        height: fit-content;
+      }
+      .back:hover {
+        filter: brightness(1.07);
+      }
+
+      /* ===== CARD ===== */
+      .card {
+        background: var(--cardGrad);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 16px;
+        backdrop-filter: blur(10px);
+      }
+
+      /* ===== SUMMARY (yang kamu minta: badge kiri + pill kanan) ===== */
+      .summaryRow {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--muted);
+        font-size: 12.5px;
+        font-weight: 700;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot.ok {
+        background: var(--green);
+      }
+      .dot.warn {
+        background: var(--amber);
+      }
+
+      .pillRight {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--muted);
+        font-size: 12.5px;
+        font-weight: 700;
+      }
+      .pillRight b {
+        color: var(--text);
+      }
+
+      /* ===== INFO BOX (kalimat “Hasil cukup yakin...” ) ===== */
+      .infoBox {
+        margin-top: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.16);
+        border-radius: 14px;
+        padding: 12px;
+        color: var(--muted);
+        font-size: 13.5px;
+        line-height: 1.6;
+      }
+
+      /* ===== GRID ===== */
+      .grid2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-top: 14px;
+      }
+      @media (max-width: 980px) {
+        .grid2 {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .sectionTitle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .sectionTitle h3 {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 850;
+      }
+      .btnGhost {
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--text);
+        border-radius: 14px;
+        padding: 10px 12px;
+        cursor: pointer;
+        text-decoration: none;
+        font-weight: 800;
+        font-size: 12.5px;
+      }
+      .btnGhost:hover {
+        filter: brightness(1.07);
+      }
+
+      img.preview {
+        width: 100%;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(0, 0, 0, 0.18);
+        display: block;
+      }
+
+      /* ===== TOP-3 bar ===== */
+      .bars {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .barRow {
+        display: grid;
+        grid-template-columns: 150px 1fr 70px;
+        gap: 10px;
+        align-items: center;
+      }
+      @media (max-width: 520px) {
+        .barRow {
+          grid-template-columns: 110px 1fr 60px;
+        }
+      }
+      .barLabel {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .barTrack {
+        height: 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.04);
+        overflow: hidden;
+      }
+      .barFill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--blue), var(--green));
+      }
+      .barPct {
+        font-size: 13px;
+        color: var(--muted);
+        text-align: right;
+      }
+
+      /* ===== Treatment ===== */
+      .small {
+        color: var(--muted);
+        font-size: 13.5px;
+        line-height: 1.6;
+        margin: 8px 0 0;
+      }
+      .list {
+        margin: 10px 0 0;
+        padding-left: 18px;
+        color: var(--muted);
+        line-height: 1.65;
+        font-size: 13.5px;
+      }
+      .list li {
+        margin: 4px 0;
+      }
+
+      /* ===== Catatan (yang kamu minta di bawah) ===== */
+      .noteBox {
+        margin-top: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.16);
+        border-radius: 14px;
+        padding: 12px;
+        color: rgba(183, 195, 230, 0.92);
+        font-size: 13px;
+        line-height: 1.6;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="top">
+        <div class="leftHead">
+          <a class="back" href="/">← Kembali</a>
+          <div class="titleWrap">
+            <h1>Hasil Prediksi</h1>
+            <p>Lihat prediksi, confidence, dan saran penanganan.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SUMMARY (badge & pill seperti screenshot) ===== -->
+      <div class="card">
+        <div class="summaryRow">
+          {% if status == "OK" %}
+          <div class="badge">
+            <span class="dot ok"></span>
+            OK — confidence ≥ {{ (threshold*100)|round(1) }}%
+          </div>
+          {% else %}
+          <div class="badge">
+            <span class="dot warn"></span>
+            UNCERTAIN — confidence &lt; {{ (threshold*100)|round(1) }}%
+          </div>
+          {% endif %}
+
+          <div class="pillRight">
+            Prediksi utama:
+            <b>{{ label }}</b> &nbsp; • &nbsp;
+            <b>{{ (confidence*100)|round(2) }}%</b>
+          </div>
+        </div>
+
+        <!-- Kalimat info seperti screenshot kamu -->
+        {% if status == "OK" %}
+        <div class="infoBox">
+          Hasil cukup yakin. Kamu bisa lihat saran penanganan di bawah. Tetap
+          cek kondisi lapangan ya.
+        </div>
+        {% else %}
+        <div class="infoBox">
+          Confidence masih rendah. Coba foto ulang lebih dekat, fokus tajam,
+          cahaya cukup, dan satu daun dominan di frame.
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- ===== IMAGES ===== -->
+      <div class="grid2">
+        <div class="card">
+          <div class="sectionTitle">
+            <h3>Foto Asli</h3>
+            <a class="btnGhost" href="{{ upload_url }}" download>Download</a>
+          </div>
+          <img class="preview" src="{{ upload_url }}" alt="uploaded" />
+        </div>
+
+        <div class="card">
+          <div class="sectionTitle">
+            <h3>Hasil (area yang dinilai model)</h3>
+            <a class="btnGhost" href="{{ output_url }}" download>Download</a>
+          </div>
+          <img class="preview" src="{{ output_url }}" alt="output" />
+          <p class="small">
+            Kotak menunjukkan area center-crop 224×224 yang dipakai model saat
+            membaca gambar.
+          </p>
+        </div>
+      </div>
+
+      <!-- ===== TOP-3 + TREATMENT ===== -->
+      <div class="grid2" style="margin-top: 16px">
+        <div class="card">
+          <div class="sectionTitle">
+            <h3>Top-3 Prediksi</h3>
+            <span class="small" style="margin: 0">Transparansi model</span>
+          </div>
+
+          <div class="bars">
+            {% for p in preds %}
+            <div class="barRow">
+              <div class="barLabel">{{ p.class }}</div>
+              <div class="barTrack">
+                <div
+                  class="barFill"
+                  style="width: {{ (p.confidence*100)|round(2) }}%;"
+                ></div>
+              </div>
+              <div class="barPct">{{ (p.confidence*100)|round(2) }}%</div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="sectionTitle">
+            <h3>Saran Penanganan</h3>
+            <span class="small" style="margin: 0">Ringkas & praktis</span>
+          </div>
+
+          {% if treatment %}
+          <p class="small" style="margin-top: 0">
+            <b style="color: var(--text)">{{ treatment.judul }}</b> — {{
+            treatment.ringkas }}
+          </p>
+
+          <h4 style="margin: 12px 0 6px; font-size: 14px">Langkah cepat</h4>
+          <ul class="list">
+            {% for a in treatment.langkah %}
+            <li>{{ a }}</li>
+            {% endfor %}
+          </ul>
+
+          <h4 style="margin: 12px 0 6px; font-size: 14px">Pencegahan</h4>
+          <ul class="list">
+            {% for p in treatment.pencegahan %}
+            <li>{{ p }}</li>
+            {% endfor %}
+          </ul>
+
+          {% else %}
+          <p class="small">Saran penanganan belum tersedia untuk kelas ini.</p>
+          {% endif %}
+
+          <!-- Catatan seperti screenshot (bawah) -->
+          <div class="noteBox">
+            Catatan: Untuk fungisida, selalu ikuti label produk dan anjuran
+            penyuluh/ahli setempat.
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
